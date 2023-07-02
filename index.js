@@ -65,16 +65,17 @@ async function processBlockNumbers(blockNumbers) {
 
 async function retrieveBlockNumbers() {
   try {
-    const subscriptionName = 'latest-blocknumber-subscription';
-    const [response] = await pubsub.subscription(subscriptionName).pull({ maxMessages: 1 });
+    const subscriptionName = 'latest-blocknumber-topic-sub';
+    const subscription = pubsub.subscription(subscriptionName);
+    const [messages] = await subscription.pull({ maxMessages: 1 });
 
-    if (response.length > 0) {
-      const message = response[0];
+    if (messages.length > 0) {
+      const message = messages[0];
       const blockNumbers = JSON.parse(message.data.toString()).blockNumbers;
 
       await processBlockNumbers(blockNumbers);
 
-      await pubsub.subscription(subscriptionName).acknowledge([message.ackId]);
+      await subscription.acknowledge([message.ackId]);
     } else {
       console.log('No messages received from Pub/Sub subscription');
     }
@@ -83,17 +84,4 @@ async function retrieveBlockNumbers() {
   }
 }
 
-
 retrieveBlockNumbers();
-
-// async function main() {
-//   try {
-//     while (true) {
-//       await retrieveBlockNumbers();
-//     }
-//   } catch (error) {
-//     console.error('Error in main loop:', error);
-//   }
-// }
-
-//main();
