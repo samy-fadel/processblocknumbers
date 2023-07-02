@@ -50,22 +50,36 @@ async function retrieveSmartContractABI(web3, blockNumber) {
 }
 
 
-async function processBlockNumbers(blockNumbers) {
+async function retrieveBlockNumbers() {
   try {
-    const apiKey = await getApiKey();
-    const web3 = new Web3(`https://mainnet.infura.io/v3/${apiKey}`);
+    const subscriptionName = 'latest-blocknumber-topic-sub';
+    const request = {
+      subscription: client.subscriptionPath(process.env.PROJECT_ID, subscriptionName),
+      maxMessages: 1,
+    };
 
-    if (Array.isArray(blockNumbers)) {
-      for (const blockNumber of blockNumbers) {
-        console.log('Processing block number:', blockNumber);
-        await retrieveSmartContractABI(web3, blockNumber);
-      }
+    const [response] = await client.pull(request);
+    const messages = response.receivedMessages;
+
+    if (messages && messages.length > 0) {
+      const message = messages[0].message;
+      const messageData = message.data.toString();
+      console.log('Received message data:', messageData);
+      const blockNumber = JSON.parse(messageData).blockNumber;
+
+      await processBlockNumbers([blockNumber]); // Wrap the block number in an array
+
+      const ackRequest = {
+        subscription: request.subscription,
+        ackIds: [messages[0].ackId],
+      };
+
+      await client.acknowledge(ackRequest);
     } else {
-      console.log('Processing single block number:', blockNumbers);
-      await retrieveSmartContractABI(web3, blockNumbers);
+      console.log('No messages received from Pub/Sub subscription');
     }
   } catch (error) {
-    console.error('Error processing block numbers:', error);
+    console.error('Error retrieving block numbers:', error);
   }
 }
 
