@@ -54,9 +54,15 @@ async function processBlockNumbers(blockNumbers) {
     const apiKey = await getApiKey();
     const web3 = new Web3(`https://mainnet.infura.io/v3/${apiKey}`);
 
-    for (const blockNumber of blockNumbers) {
-      console.log('Processing block number:', blockNumber);
-      await retrieveSmartContractABI(web3, blockNumber);
+    if (Array.isArray(blockNumbers)) {
+      for (const blockNumber of blockNumbers) {
+        console.log('Processing block number:', blockNumber);
+        await retrieveSmartContractABI(web3, blockNumber);
+      }
+    } else {
+      console.error('Invalid blockNumbers format. Expected an array.');
+      console.log('Processing block number:', blockNumbers);
+      await retrieveSmartContractABI(web3, blockNumbers);
     }
   } catch (error) {
     console.error('Error processing block numbers:', error);
