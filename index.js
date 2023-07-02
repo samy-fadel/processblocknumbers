@@ -1,10 +1,10 @@
 const Web3 = require('web3');
 const { SecretManagerServiceClient } = require('@google-cloud/secret-manager');
-const { PubSub } = require('@google-cloud/pubsub');
+const { v1 } = require('@google-cloud/pubsub');
 
 console.log('project id:', process.env.PROJECT_ID);
 
-const pubsub = new PubSub({ projectId: process.env.PROJECT_ID });
+const client = new v1.SubscriberClient();
 
 async function getApiKey() {
   const secretName = `projects/${process.env.PROJECT_NUMBER}/secrets/web3-api-key/versions/latest`;
@@ -66,16 +66,26 @@ async function processBlockNumbers(blockNumbers) {
 async function retrieveBlockNumbers() {
   try {
     const subscriptionName = 'latest-blocknumber-topic-sub';
-    const subscription = pubsub.subscription(subscriptionName);
-    const [messages] = await subscription.pull({ maxMessages: 1 });
+    const request = {
+      subscription: client.subscriptionPath(process.env.PROJECT_ID, subscriptionName),
+      maxMessages: 1,
+    };
 
-    if (messages.length > 0) {
-      const message = messages[0];
+    const [response] = await client.pull(request);
+    const messages = response.receivedMessages;
+
+    if (messages && messages.length > 0) {
+      const message = messages[0].message;
       const blockNumbers = JSON.parse(message.data.toString()).blockNumbers;
 
       await processBlockNumbers(blockNumbers);
 
-      await subscription.acknowledge([message.ackId]);
+      const ackRequest = {
+        subscription: request.subscription,
+        ackIds: [messages[0].ackId],
+      };
+
+      await client.acknowledge(ackRequest);
     } else {
       console.log('No messages received from Pub/Sub subscription');
     }
