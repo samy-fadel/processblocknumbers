@@ -83,14 +83,17 @@ async function retrieveBlockNumbers() {
   }
 }
 
-async function main() {
-  try {
-    while (true) {
-      await retrieveBlockNumbers();
-    }
-  } catch (error) {
-    console.error('Error in main loop:', error);
-  }
-}
 
-main();
+retrieveBlockNumbers();
+
+// async function main() {
+//   try {
+//     while (true) {
+//       await retrieveBlockNumbers();
+//     }
+//   } catch (error) {
+//     console.error('Error in main loop:', error);
+//   }
+// }
+
+//main();
