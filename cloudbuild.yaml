@@ -1,0 +1,39 @@
+steps:
+  - name: 'gcr.io/cloud-builders/npm'
+    args: ['install']
+
+  # Build the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'europe-west1-docker.pkg.dev/gkemedium/ethereum/processblocknumber-image', '.']
+    env:
+      - 'REGION=europe-west1'
+
+  # Push the Docker image to Google Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'europe-west1-docker.pkg.dev/gkemedium/ethereum/processblocknumber-image']
+    env:
+      - 'REGION=europe-west1'
+
+  # Retrieve project number environment variable
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        export PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID --format='value(projectNumber)')
+        echo "PROJECT_NUMBER=$PROJECT_NUMBER" >> /workspace/env_vars.txt
+
+  # Deploy the image as a Cloud Run job
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'beta'
+      - 'run'
+      - 'jobs'
+      - 'create'
+      - 'publishprocessblocknumbertopubsub'
+      - '--image=europe-west1-docker.pkg.dev/gkemedium/ethereum/processblocknumber-image'
+      - '--region=europe-west1'
+      - '--set-env-vars=PROJECT_ID=$PROJECT_ID,PROJECT_NUMBER=$PROJECT_NUMBER'
+      
+timeout: 600s

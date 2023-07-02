@@ -1,0 +1,26 @@
+{
+  "name": "web3eth",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samy-fadel/web3eth.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/samy-fadel/web3eth/issues"
+  },
+  "homepage": "https://github.com/samy-fadel/web3eth#readme",
+  "dependencies": {
+    "@google-cloud/secret-manager": "^4.2.2",
+    "firebase-admin": "^11.9.0",
+    "web3": "^1.0.0",
+    "@google-cloud/pubsub": "^3.7.1"
+  }
+}
