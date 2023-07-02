@@ -21,6 +21,6 @@
     "@google-cloud/secret-manager": "^4.2.2",
     "firebase-admin": "^11.9.0",
     "web3": "^1.0.0",
-    "@google-cloud/pubsub": "^3.7.1"
+    "@google-cloud/pubsub": "3.7.1"
   }
 }
