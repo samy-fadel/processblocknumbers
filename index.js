@@ -49,6 +49,7 @@ async function retrieveSmartContractABI(web3, blockNumber) {
   }
 }
 
+
 async function processBlockNumbers(blockNumbers) {
   try {
     const apiKey = await getApiKey();
@@ -60,7 +61,6 @@ async function processBlockNumbers(blockNumbers) {
         await retrieveSmartContractABI(web3, blockNumber);
       }
     } else {
-      console.error('Invalid blockNumbers format. Expected an array.');
       console.log('Processing single block number:', blockNumbers);
       await retrieveSmartContractABI(web3, blockNumbers);
     }
@@ -68,6 +68,9 @@ async function processBlockNumbers(blockNumbers) {
     console.error('Error processing block numbers:', error);
   }
 }
+
+
+
 
 async function retrieveBlockNumbers() {
   try {
