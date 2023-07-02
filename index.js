@@ -34,7 +34,7 @@ async function retrieveSmartContractABI(web3, blockNumber) {
       if (tx.to) {
         const code = await web3.eth.getCode(tx.to);
         if (code.startsWith('0x') && code !== '0x') { // Add this check
-          const contract = new web3.eth.Contract(code, tx.to);
+          const contract = new web3.eth.Contract(JSON.parse(code), tx.to);
           const contractABI = contract.options.jsonInterface;
           contractABIs.push(contractABI);
         }
