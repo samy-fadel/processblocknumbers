@@ -24,6 +24,7 @@ async function publishSmartContractABI(contractABI) {
   }
 }
 
+
 async function retrieveSmartContractABI(web3, blockNumber) {
   try {
     const block = await web3.eth.getBlock(blockNumber);
@@ -33,7 +34,7 @@ async function retrieveSmartContractABI(web3, blockNumber) {
       const tx = await web3.eth.getTransaction(txHash);
       if (tx.to) {
         const code = await web3.eth.getCode(tx.to);
-        console.log('Code:', code); // Debugging
+        console.log('Code:', code); // Add this line for debugging
 
         if (code.startsWith('0x') && code !== '0x') { // Add this check
           const contract = new web3.eth.Contract(JSON.parse(code), tx.to);
@@ -50,6 +51,8 @@ async function retrieveSmartContractABI(web3, blockNumber) {
     console.error('Error retrieving smart contract ABI:', error);
   }
 }
+
+
 
 async function retrieveBlockNumbers() {
   try {
