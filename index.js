@@ -48,8 +48,8 @@ async function retrieveSmartContractABI(web3, blockNumber) {
       await publishSmartContractABI(contractABIs);
     }
   } catch (error) {
-    console.error('Error retrieving smart contract ABI:', error);
-  }
+  console.error('Error retrieving smart contract ABI:', error);
+  console.error(error.stack);  }
 }
 
 async function retrieveBlockNumbers() {
