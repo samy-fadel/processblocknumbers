@@ -29,12 +29,12 @@ async function retrieveSmartContractABI(web3, blockNumber) {
     const block = await web3.eth.getBlock(blockNumber);
     const contractABIs = [];
 
-    console.log("line 32", block);
+    console.log("line 32", block, "end line 32");
 
     for (const txHash of block.transactions) {
       const tx = await web3.eth.getTransaction(txHash);
       if (tx.to) {
-        console.log("line 37 inside if tx.to");
+        console.log("line 37 inside if tx.to", tx, txHash, tx.to);
         const code = await web3.eth.getCode(tx.to);
         console.log("line 38", code);
         if (code.startsWith('0x') && code !== '0x') { // Add this check
