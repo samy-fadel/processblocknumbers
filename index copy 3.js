@@ -18,9 +18,9 @@ async function publishSmartContractABI(contractABI) {
     const topicName = 'smartcontract-topic';
     const data = Buffer.from(JSON.stringify(contractABI));
     await pubsub.topic(topicName).publish(data);
-    console.log('Smart contract ABI published to Pub/Sub topic');
+    console.log('line 21 Smart contract ABI published to Pub/Sub topic');
   } catch (error) {
-    console.error('Error publishing smart contract ABI:', error);
+    console.error('line 23 Error publishing smart contract ABI:', error);
   }
 }
 
@@ -49,8 +49,8 @@ async function retrieveSmartContractABI(web3, blockNumber) {
       await publishSmartContractABI(contractABIs);
     }
   } catch (error) {
-    console.error('Error retrieving smart contract ABI:', error);
-    console.error(error.stack);
+    console.error('line 52 Error retrieving smart contract ABI:', error);
+    console.error("line 53 ", error.stack);
   }
 }
 
@@ -63,15 +63,15 @@ async function retrieveBlockNumbers() {
 
         if (Array.isArray(blockNumbers)) {
           for (const blockNumber of blockNumbers) {
-            console.log('Processing block number:', blockNumber);
+            console.log('line 66 Processing block number:', blockNumber);
             await retrieveSmartContractABI(web3, blockNumber);
           }
         } else {
-          console.log('Processing single block number:', blockNumbers);
+          console.log('line 70 Processing single block number:', blockNumbers);
           await retrieveSmartContractABI(web3, blockNumbers);
         }
       } catch (error) {
-        console.error('Error processing block numbers:', error);
+        console.error('line 74 Error processing block numbers:', error);
       }
     };
 
@@ -87,7 +87,7 @@ async function retrieveBlockNumbers() {
     if (messages && messages.length > 0) {
       const message = messages[0].message;
       const messageData = message.data.toString();
-      console.log('Received message data:', messageData);
+      console.log('line 90 Received message data:', messageData);
       const blockNumber = JSON.parse(messageData).blockNumber;
 
       await processBlockNumbers([blockNumber]);
@@ -99,10 +99,10 @@ async function retrieveBlockNumbers() {
 
       await client.acknowledge(ackRequest);
     } else {
-      console.log('No messages received from Pub/Sub subscription');
+      console.log('line 102 No messages received from Pub/Sub subscription');
     }
   } catch (error) {
-    console.error('Error retrieving block numbers:', error);
+    console.error('line 105 Error retrieving block numbers:', error);
   }
 }
 
