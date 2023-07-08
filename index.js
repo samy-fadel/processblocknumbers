@@ -34,9 +34,11 @@ async function retrieveSmartContractABI(web3, blockNumber) {
     for (const txHash of block.transactions) {
       const tx = await web3.eth.getTransaction(txHash);
       if (tx.to) {
+        console.log("line 37 inside if tx.to");
         const code = await web3.eth.getCode(tx.to);
         console.log("line 38", code);
         if (code.startsWith('0x') && code !== '0x') { // Add this check
+          console.log("line 41", JSON.parse(code), tx.to);
           const contract = new web3.eth.Contract(JSON.parse(code), tx.to);
           const contractABI = contract.options.jsonInterface;
           console.log("line 42 ", contractABI);
@@ -49,7 +51,7 @@ async function retrieveSmartContractABI(web3, blockNumber) {
       await publishSmartContractABI(contractABIs);
     }
   } catch (error) {
-  console.error('Error retrieving smart contract ABI:', error);
+  console.error('line 54 Error retrieving smart contract ABI:', error);
   console.error(error.stack);  }
 }
 
