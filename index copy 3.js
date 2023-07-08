@@ -3,6 +3,7 @@ const { SecretManagerServiceClient } = require('@google-cloud/secret-manager');
 const { v1 } = require('@google-cloud/pubsub');
 
 console.log('project id:', process.env.PROJECT_ID);
+console.log("line 6");
 
 const client = new v1.SubscriberClient();
 
