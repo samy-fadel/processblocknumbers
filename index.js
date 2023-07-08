@@ -2,7 +2,7 @@ const Web3 = require('web3');
 const { SecretManagerServiceClient } = require('@google-cloud/secret-manager');
 const { v1 } = require('@google-cloud/pubsub');
 
-console.log('project id:', process.env.PROJECT_ID);
+console.log('line 5 project id:', process.env.PROJECT_ID);
 
 const client = new v1.SubscriberClient();
 
@@ -18,9 +18,9 @@ async function publishSmartContractABI(contractABI) {
     const topicName = 'smartcontract-topic';
     const data = Buffer.from(JSON.stringify(contractABI));
     await pubsub.topic(topicName).publish(data);
-    console.log('Smart contract ABI published to Pub/Sub topic');
+    console.log('line 21 Smart contract ABI published to Pub/Sub topic');
   } catch (error) {
-    console.error('Error publishing smart contract ABI:', error);
+    console.error('line 23 Error publishing smart contract ABI:', error);
   }
 }
 
@@ -29,16 +29,17 @@ async function retrieveSmartContractABI(web3, blockNumber) {
     const block = await web3.eth.getBlock(blockNumber);
     const contractABIs = [];
 
-    console.log(block);
+    console.log("line 32", block);
 
     for (const txHash of block.transactions) {
       const tx = await web3.eth.getTransaction(txHash);
       if (tx.to) {
         const code = await web3.eth.getCode(tx.to);
-        console.log(code);
+        console.log("line 38", code);
         if (code.startsWith('0x') && code !== '0x') { // Add this check
           const contract = new web3.eth.Contract(JSON.parse(code), tx.to);
           const contractABI = contract.options.jsonInterface;
+          console.log("line 42 ", contractABI);
           contractABIs.push(contractABI);
         }
       }
@@ -61,15 +62,15 @@ async function retrieveBlockNumbers() {
 
         if (Array.isArray(blockNumbers)) {
           for (const blockNumber of blockNumbers) {
-            console.log('Processing block number:', blockNumber);
+            console.log('line 64 Processing block number:', blockNumber);
             await retrieveSmartContractABI(web3, blockNumber);
           }
         } else {
-          console.log('Processing single block number:', blockNumbers);
+          console.log('line 68 Processing single block number:', blockNumbers);
           await retrieveSmartContractABI(web3, blockNumbers);
         }
       } catch (error) {
-        console.error('Error processing block numbers:', error);
+        console.error('line 72 Error processing block numbers:', error);
       }
     };
 
@@ -85,7 +86,7 @@ async function retrieveBlockNumbers() {
     if (messages && messages.length > 0) {
       const message = messages[0].message;
       const messageData = message.data.toString();
-      console.log('Received message data:', messageData);
+      console.log('line 88 Received message data:', messageData);
       const blockNumber = JSON.parse(messageData).blockNumber;
 
       await processBlockNumbers([blockNumber]); // Wrap the block number in an array
@@ -97,10 +98,10 @@ async function retrieveBlockNumbers() {
 
       await client.acknowledge(ackRequest);
     } else {
-      console.log('No messages received from Pub/Sub subscription');
+      console.log('line 100 No messages received from Pub/Sub subscription');
     }
   } catch (error) {
-    console.error('Error retrieving block numbers:', error);
+    console.error('line 103 Error retrieving block numbers:', error);
   }
 }
 
