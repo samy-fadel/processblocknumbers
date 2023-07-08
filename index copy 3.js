@@ -29,16 +29,17 @@ async function retrieveSmartContractABI(web3, blockNumber) {
     const block = await web3.eth.getBlock(blockNumber);
     const contractABIs = [];
 
-    console.log(block);
+    console.log("line 32 ", block);
 
     for (const txHash of block.transactions) {
       const tx = await web3.eth.getTransaction(txHash);
       if (tx.to) {
         const code = await web3.eth.getCode(tx.to);
-        console.log(code);
+        console.log("line 38 ", code);
         if (code.startsWith('0x') && code !== '0x') {
           const contract = new web3.eth.Contract(code, tx.to);
           const contractABI = contract.options.jsonInterface;
+          console.log("line 42 ", contractABI);
           contractABIs.push(contractABI);
         }
       }
