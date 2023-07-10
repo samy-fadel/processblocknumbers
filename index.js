@@ -33,7 +33,7 @@ async function retrieveSmartContractABI(web3, blockNumber) {
 
     for (const txHash of block.transactions) {
       const tx = await web3.eth.getTransaction(txHash);
-      console.log(tx.to);
+      console.log("line 36 ", tx.to);
       if (!tx.to) { // Check if tx.to is null (contract creation transaction)
         console.log("line 37 inside if tx.to", tx.to);
         const code = await web3.eth.getCode(tx.to);
@@ -46,7 +46,7 @@ async function retrieveSmartContractABI(web3, blockNumber) {
           console.log("line 42 ", contractABI);
           contractABIs.push(contractABI);
         }
-      }
+      } else console.log("tx.to not null then no smart contract");
     }
 
     if (contractABIs.length > 0) {
