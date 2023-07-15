@@ -26,7 +26,7 @@ async function publishSmartContractABI(contractABI) {
 
 async function retrieveSmartContractABI(web3, blockNumber) {
   try {
-    const block = await web3.eth.getBlock(12287507);
+    const block = await web3.eth.getBlock(blockNumber);
     const contractABIs = [];
 
     console.log("line 32", block, "end line 32");
